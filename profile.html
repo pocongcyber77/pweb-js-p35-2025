@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Syndicate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body data-page="profile">
+    <!-- profile dashboard header navbar -->
+    <header class="navbar navbar-sticky">
+      <div class="nav-left">
+        <h1 class="brand">User Profile</h1>
+      </div>
+      <div class="nav-right">
+        <button class="btn-gold btn-ghost" id="toggle-theme" aria-label="Toggle dark mode">🌙</button>
+        <a class="btn-gold" href="./recipes.html">Back</a>
+      </div>
+    </header>
+
+    <main class="container fade-in">
+      <!-- identitas si user -->
+      <section class="card" style="padding:16px;">
+        <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+          <img id="admin-image" src="" alt="" style="width:120px; height:120px; border-radius:12px; object-fit:cover;" />
+          <div style="flex:1 1 320px;">
+            <h2 id="admin-name" class="title" style="margin:0 0 6px;">-</h2>
+            <div class="meta" id="admin-username">@-</div>
+            <div class="meta"><span id="admin-role">user</span> • <span id="admin-email"></span> • <span id="admin-phone"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- alamat & companynya -->
+      <section class="grid" style="margin-top:16px;">
+        <article class="card" style="padding:16px;">
+          <h3 class="recipe-title" style="margin-top:0;">Address</h3>
+          <div id="admin-address">-</div>
+          <div id="admin-address-extra" class="meta"></div>
+        </article>
+        <article class="card" style="padding:16px;">
+          <h3 class="recipe-title" style="margin-top:0;">Company</h3>
+          <div id="admin-company">-</div>
+          <div id="admin-title" class="meta"></div>
+          <div id="admin-company-address" class="meta"></div>
+        </article>
+      </section>
+
+      <!-- profil user & ingfo device -->
+      <section class="grid" style="margin-top:16px;">
+        <article class="card" style="padding:16px;">
+          <h3 class="recipe-title" style="margin-top:0;">Profile</h3>
+          <div id="admin-university" class="meta"></div>
+          <div id="admin-gender" class="meta"></div>
+          <div id="admin-birth" class="meta"></div>
+          <div id="admin-blood" class="meta"></div>
+          <div id="admin-phys" class="meta"></div>
+          <div id="admin-eyehair" class="meta"></div>
+        </article>
+        <article class="card" style="padding:16px;">
+          <h3 class="recipe-title" style="margin-top:0;">Device Info</h3>
+          <div id="admin-ip" class="meta"></div>
+          <div id="admin-useragent" class="meta"></div>
+          <h4 style="margin:12px 0 6px;">Bank</h4>
+          <div id="admin-bank" class="meta"></div>
+          <h4 style="margin:12px 0 6px;">Crypto</h4>
+          <div id="admin-crypto" class="meta"></div>
+        </article>
+      </section>
+
+      
+    </main>
+
+    <script src="./script.js" defer></script>
+  </body>
+  </html>
+
+
