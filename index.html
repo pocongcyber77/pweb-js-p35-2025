@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+  <head>
+  
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login • Recipe Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body data-page="login">
+    
+    <header class="navbar navbar-center">
+      <h1 class="brand">Recipes Collection</h1>
+      <button class="btn-gold btn-ghost" id="toggle-theme" aria-label="Toggle dark mode">🌙</button>
+    </header>
+
+    <main class="container auth-container fade-in">
+     
+      <section class="card auth-card">
+        <h2 class="title">Login</h2>
+        <p class="subtitle">Please login to view the recipes collection.</p>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="contoh: emilys" autocomplete="username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+          </div>
+
+          <div class="form-row">
+            <label class="checkbox">
+              <input id="remember" type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <span class="helper" id="auth-status" aria-live="polite"></span>
+          </div>
+
+          <button type="submit" class="btn-gold" id="login-btn">Login</button>
+        </form>
+      </section>
+    </main>
+
+   
+    <script src="./script.js" defer></script>
+  </body>
+</html>
+
+

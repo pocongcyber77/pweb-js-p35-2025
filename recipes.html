@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipes • Recipes Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body data-page="recipes">
+    <header class="navbar navbar-sticky">
+      <div class="nav-left">
+        <h1 class="brand">Recipes Collection</h1>
+      </div>
+      <div class="nav-center">
+        <div class="welcome" id="welcome-text">Bonjour</div>
+      </div>
+      <div class="nav-right">
+        <button class="btn-gold btn-ghost" id="toggle-theme" aria-label="Toggle dark mode">🌙</button>
+        <a class="btn-gold" href="./profile.html" id="admin-link">Profile</a>
+        <button class="btn-gold" id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <main class="container fade-in">
+      <!-- kontol pencarian, filter, -->
+      <section class="controls">
+        <div class="search-group">
+          <input id="search" type="search" placeholder="Cari nama, cuisine, ingredients, atau tags..." />
+        </div>
+        <div class="filter-group">
+          <label for="cuisine-filter" class="sr-only">Filter By</label>
+          <select id="cuisine-filter">
+            <option value="">All</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <button id="filter-favorites" class="btn-gold btn-ghost" aria-pressed="false">Favorite<//button>
+        </div>
+      </section>
+      
+      <!-- grid buat recipes card -->
+      <section id="recipes-grid" class="grid"></section>
+
+      <div class="center">
+        <button id="show-more" class="btn-gold" hidden>Show More</button>
+      </div>
+    </main>
+    
+    <!-- modal buat detail resep -->
+    <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-content" role="document">
+        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script src="./script.js" defer></script>
+  </body>
+  </html>
+
+
