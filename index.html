@@ -4,15 +4,16 @@
   
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login • Recipe Collection</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body data-page="login">
     
     <header class="navbar navbar-center">
+      <div class="navbar-placeholder"></div>
+      
       <h1 class="brand">Recipes Collection</h1>
       <button class="btn-gold btn-ghost" id="toggle-theme" aria-label="Toggle dark mode">🌙</button>
     </header>
@@ -22,6 +23,8 @@
       <section class="card auth-card">
         <h2 class="title">Login</h2>
         <p class="subtitle">Please login to view the recipes collection.</p>
+
+        <span class="helper" id="auth-status" aria-live="polite"></span>
 
         <form id="login-form" novalidate>
           <div class="form-group">
@@ -35,15 +38,14 @@
           </div>
 
           <div class="form-row">
-            <label class="checkbox">
-              <input id="remember" type="checkbox" />
-              <span>Remember me</span>
-            </label>
-            <span class="helper" id="auth-status" aria-live="polite"></span>
+              <label class="checkbox">
+                  <input id="remember" type="checkbox" />
+                  Remember me
+              </label>
           </div>
-
           <button type="submit" class="btn-gold" id="login-btn">Login</button>
         </form>
+
       </section>
     </main>
 
