@@ -1,11 +1,8 @@
-/**
- * @typedef {import('./types').User} User
- * @typedef {import('./types').Recipe} Recipe
- */
-
-
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+document.documentElement.style.setProperty('--primary-rgb', '25, 42, 86'); // 192A56
+document.documentElement.style.setProperty('--accent-rgb', '232, 74, 95'); // E84A5F
 
 function loadTheme() {
   const saved = localStorage.getItem("theme") || "light";
@@ -20,9 +17,22 @@ function toggleTheme() {
 
 function setAuthMessage(text, kind = "info") {
   const el = $("#auth-status");
-  if (!el) return;
+  const form = $("#login-form");
+  if (!el || !form) return;
+  
   el.textContent = text;
-  el.style.color = kind === "error" ? "#b00020" : "";
+  el.className = `helper status-${kind}`; 
+
+  const btn = $("#login-btn");
+  if (btn) {
+    if (kind === "loading") {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Authenticating...`;
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Login";
+    }
+  }
 }
 
 function saveUserName(name, remember) {
@@ -63,11 +73,11 @@ async function handleLoginSubmit(e) {
   const remember = $("#remember").checked;
 
   if (!password) {
-    setAuthMessage("Password kosong", "error");
+    setAuthMessage("The password can't be blank.", "error");
     return;
   }
-
-  setAuthMessage("Authenticating…");
+  
+  setAuthMessage("Authenticating…", "loading"); 
 
   try {
     const res = await fetch("https://dummyjson.com/users");
@@ -77,17 +87,17 @@ async function handleLoginSubmit(e) {
     const user = users.find(u => String(u.username).toLowerCase() === username.toLowerCase());
 
     if (!user) {
-      setAuthMessage("Username tidak ditemukan", "error");
+      setAuthMessage("Username not found!", "error");
       return;
     }
 
     saveUserName(user.firstName, remember);
-    setAuthMessage("Login berhasil!");
+    setAuthMessage("Login successful! Redirecting...", "success"); 
     setTimeout(() => {
       window.location.href = "./recipes.html";
     }, 1200);
   } catch (err) {
-    setAuthMessage("Gagal terhubung ke server", "error");
+    setAuthMessage("Failed to connect to the server. Please try again.", "error");
   }
 }
 
@@ -95,12 +105,14 @@ function initLoginPage() {
   const form = $("#login-form");
   if (!form) return;
   form.addEventListener("submit", handleLoginSubmit);
+  
+  setAuthMessage("Enter your username and password.", "info");
 }
 
 
 let allRecipes = [];
 let filteredRecipes = [];
-let visibleCount = 10;
+let visibleCount = 9; 
 let favoritesSet = new Set();
 let showFavoritesOnly = false;
 
@@ -174,6 +186,7 @@ function renderGrid() {
   const items = filteredRecipes.slice(0, visibleCount);
   items.forEach(r => grid.appendChild(createRecipeCard(r)));
   const btn = $("#show-more");
+  
   if (btn) btn.hidden = visibleCount >= filteredRecipes.length;
 }
 
@@ -259,7 +272,6 @@ function attachGridEvents() {
 }
 
 
-
 async function loadRecipes() {
   const grid = $("#recipes-grid");
   if (grid) grid.innerHTML = "Memuat resep…";
@@ -285,7 +297,10 @@ function initRecipesPage() {
   logoutBtn?.addEventListener("click", () => { clearUser(); window.location.replace("./index.html"); });
 
   const showMore = $("#show-more");
-  showMore?.addEventListener("click", () => { visibleCount += 10; renderGrid(); });
+  showMore?.addEventListener("click", () => { 
+    visibleCount += 6; 
+    renderGrid(); 
+  });
 
   const search = $("#search");
   search?.addEventListener("input", debounce(applyFilters, 300));
@@ -390,8 +405,6 @@ function fillProfile(u) {
     cryptoEl.textContent = parts;
   }
 }
-
-
 
 async function initPublicProfilePage() {
   const params = new URLSearchParams(location.search);
