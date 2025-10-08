@@ -1,6 +1,6 @@
 ## Praktikum Pemograman Website/Modul-2/ Recipes Collection – Dokumentasi singkat 
-Ahmad Ibnu Athaillah  - 5027241024
-Ni'mah Fauziyyah Atok - 5027241103
+1. Ahmad Ibnu Athaillah  - 5027241024
+2. Ni'mah Fauziyyah Atok - 5027241103
 
 Disini kita bikin project websitenya menggunakan dua halaman dengan vanilla/gapake framework hanya HTML, CSS, dan javascript untuk login dan menampilkan koleksi resep. Datanya diambil via fetch dari `https://dummyjson.com/users` sama `https://dummyjson.com/recipes`. tambahaan: profil dashboard, dark mode, tambahkan ke favorit, debounce search /nyari secara realtime, dan filter favorit.
 
