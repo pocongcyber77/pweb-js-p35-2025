@@ -35,26 +35,65 @@ function setAuthMessage(text, kind = "info") {
   }
 }
 
-function saveUserName(name, remember) {
+// --- UPDATED AUTH FUNCTIONS START ---
+const FIRST_NAME_KEY = "firstName";
+const AUTH_TOKEN_KEY = "authToken";
+
+/**
+ * Saves user data (firstName and token) to storage.
+ * @param {string} name - The user's first name.
+ * @param {string} token - The user's authentication token.
+ * @param {boolean} remember - Whether to use localStorage (persistent) or sessionStorage (session only).
+ */
+function saveUserData(name, token, remember) {
   try {
-    // save ke loval storagre
-    localStorage.setItem("firstName", name);
-    if (remember) {
-      sessionStorage.setItem("firstName", name);
-    } else {
-      sessionStorage.removeItem("firstName");
-    }
-  } catch {}
+    const storage = remember ? localStorage : sessionStorage;
+    const oppositeStorage = remember ? sessionStorage : localStorage;
+
+    storage.setItem(FIRST_NAME_KEY, name);
+    storage.setItem(AUTH_TOKEN_KEY, token);
+
+    oppositeStorage.removeItem(FIRST_NAME_KEY);
+    oppositeStorage.removeItem(AUTH_TOKEN_KEY);
+  } catch (e) {
+    console.error("Error saving user data:", e);
+  }
 }
 
+/**
+ * @returns {{firstName: string|null, token: string|null}}
+ */
+function getUserData() {
+  const nameL = localStorage.getItem(FIRST_NAME_KEY);
+  const tokenL = localStorage.getItem(AUTH_TOKEN_KEY);
 
+  if (nameL && tokenL) {
+    return { firstName: nameL, token: tokenL };
+  }
+
+  const nameS = sessionStorage.getItem(FIRST_NAME_KEY);
+  const tokenS = sessionStorage.getItem(AUTH_TOKEN_KEY);
+
+  if (nameS && tokenS) {
+    return { firstName: nameS, token: tokenS };
+  }
+  
+  return { firstName: null, token: null };
+}
+
+/**
+ * Gets just the first name for display.
+ * @returns {string|null}
+ */
 function getUserName() {
-  return localStorage.getItem("firstName") || sessionStorage.getItem("firstName") || null;
+  return getUserData().firstName;
 }
 
 function clearUser() {
-  localStorage.removeItem("firstName");
-  sessionStorage.removeItem("firstName");
+  localStorage.removeItem(FIRST_NAME_KEY);
+  sessionStorage.removeItem(FIRST_NAME_KEY);
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
 }
 
 function debounce(fn, wait = 300) {
@@ -72,41 +111,61 @@ async function handleLoginSubmit(e) {
   const password = $("#password").value;
   const remember = $("#remember").checked;
 
+  // 1. Validasi: Username tidak boleh kosong
+  if (!username) {
+    setAuthMessage("The username can't be blank.", "error");
+    return;
+  }
+  
+  // 1. Validasi: Password tidak boleh kosong (sesuai permintaan, isinya tidak diverifikasi)
   if (!password) {
-    setAuthMessage("The password can't be blank.", "error");
+    setAuthMessage("The password can't be blank, but the content does not matter.", "error");
     return;
   }
   
   setAuthMessage("Authenticating…", "loading"); 
 
-  try {
+   try {
+    // 2. Mengambil semua data pengguna untuk memverifikasi keberadaan username
     const res = await fetch("https://dummyjson.com/users");
     if (!res.ok) throw new Error("bad_status");
     const data = await res.json();
     const users = Array.isArray(data?.users) ? data.users : [];
+    
+    // 3. Mencari pengguna berdasarkan username
     const user = users.find(u => String(u.username).toLowerCase() === username.toLowerCase());
 
     if (!user) {
       setAuthMessage("Username not found!", "error");
       return;
     }
+    
+    const SIMULATED_TOKEN = `SIMULATED_${user.id}_${Date.now()}`; 
+    
+    // 5. Simpan nama depan pengguna dan token simulasi
+    if (user.firstName && SIMULATED_TOKEN) {
+      saveUserData(user.firstName, SIMULATED_TOKEN, remember);
+      setAuthMessage("Login successful! Redirecting...", "success"); 
+      setTimeout(() => {
+        window.location.href = "./recipes.html";
+      }, 1200);
+    } else {
+      throw new Error("Missing user data (firstName) from server response.");
+    }
 
-    saveUserName(user.firstName, remember);
-    setAuthMessage("Login successful! Redirecting...", "success"); 
-    setTimeout(() => {
-      window.location.href = "./recipes.html";
-    }, 1200);
   } catch (err) {
-    setAuthMessage("Failed to connect to the server. Please try again.", "error");
+    console.error(err);
+    setAuthMessage("Failed to connect to the server or unexpected error. Please try again.", "error");
   }
 }
 
+// --- UPDATED AUTH FUNCTIONS END ---
 function initLoginPage() {
   const form = $("#login-form");
   if (!form) return;
   form.addEventListener("submit", handleLoginSubmit);
   
-  setAuthMessage("Enter your username and password.", "info");
+  setAuthMessage("Enter your username and password. Try: 'emilys' / 'emilyspass'", "info");
 }
 
 
@@ -137,12 +196,12 @@ function saveFavorites() {
 }
 
 function requireAuth() {
-  const name = getUserName();
-  if (!name) {
+  const data = getUserData();
+  if (!data.firstName || !data.token) {
     window.location.replace("./index.html");
     return null;
   }
-  return name;
+  return data; // Return both name and token
 }
 
 function renderWelcome(name) {
@@ -289,9 +348,9 @@ async function loadRecipes() {
 }
 
 function initRecipesPage() {
-  const name = requireAuth();
-  if (!name) return;
-  renderWelcome(name);
+  const authData = requireAuth();
+  if (!authData) return;
+  renderWelcome(authData.firstName);
   loadFavorites();
   const logoutBtn = $("#logout-btn");
   logoutBtn?.addEventListener("click", () => { clearUser(); window.location.replace("./index.html"); });
@@ -406,22 +465,43 @@ function fillProfile(u) {
   }
 }
 
+// --- UPDATED PROFILE FUNCTION START ---
 async function initPublicProfilePage() {
+  const { token, firstName } = getUserData();
   const params = new URLSearchParams(location.search);
   const qUser = params.get("u");
+  
+  const el = document.getElementById("admin-name");
+  if (el) el.textContent = "Loading profile…";
+
   try {
     const res = await fetch("https://dummyjson.com/users");
     if (!res.ok) throw new Error("bad_status");
     const data = await res.json();
     const users = Array.isArray(data?.users) ? data.users : [];
-    const u = qUser
-      ? users.find(x => String(x.username).toLowerCase() === qUser.toLowerCase())
-      : users[0];
-    if (u) {
-      fillProfile(u);
+    
+    let user = null;
+
+    if (qUser) {
+      user = users.find(x => String(x.username).toLowerCase() === qUser.toLowerCase());
+    } else if (token) {
+      user = users.find(x => String(x.firstName).toLowerCase() === firstName.toLowerCase());
+      
+      // Fallback: Jika menggunakan token simulasi, kita bisa ekstrak ID-nya
+      if (!user && token.startsWith('SIMULATED_')) {
+          const userId = Number(token.split('_')[1]);
+          user = users.find(x => x.id === userId);
+      }
     }
-  } catch {
-    const el = document.getElementById("admin-name");
-    if (el) el.textContent = "Gagal memuat profil";
+    
+    if (user) {
+      fillProfile(user);
+    } else {
+      if (el) el.textContent = qUser ? `User @${qUser} not found!` : "No user logged in or profile not found!";
+      if (!qUser && !token) window.location.replace("./index.html"); 
+    }
+  } catch(e) {
+    console.error(e);
+    if (el) el.textContent = "Can't load the profile page! (Server/Network Error)";
   }
 }
