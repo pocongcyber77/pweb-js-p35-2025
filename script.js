@@ -35,7 +35,7 @@ function setAuthMessage(text, kind = "info") {
   }
 }
 
-// --- UPDATED AUTH FUNCTIONS START ---
+
 const FIRST_NAME_KEY = "firstName";
 const AUTH_TOKEN_KEY = "authToken";
 
@@ -104,20 +104,19 @@ function debounce(fn, wait = 300) {
   };
 }
 
-// Login Page Logic
+
 async function handleLoginSubmit(e) {
   e.preventDefault();
   const username = $("#username").value.trim();
   const password = $("#password").value;
   const remember = $("#remember").checked;
 
-  // 1. Validasi: Username tidak boleh kosong
+ 
   if (!username) {
     setAuthMessage("The username can't be blank.", "error");
     return;
   }
   
-  // 1. Validasi: Password tidak boleh kosong (sesuai permintaan, isinya tidak diverifikasi)
   if (!password) {
     setAuthMessage("The password can't be blank, but the content does not matter.", "error");
     return;
@@ -126,7 +125,7 @@ async function handleLoginSubmit(e) {
   setAuthMessage("Authenticating…", "loading"); 
 
   try {
-    // Gunakan DummyJSON Auth API untuk validasi kredensial
+
     const res = await fetch("https://dummyjson.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -157,7 +156,7 @@ async function handleLoginSubmit(e) {
   }
 }
 
-// --- UPDATED AUTH FUNCTIONS END ---
+
 function initLoginPage() {
   const form = $("#login-form");
   if (!form) return;
@@ -199,7 +198,7 @@ function requireAuth() {
     window.location.replace("./index.html");
     return null;
   }
-  return data; // Return both name and token
+  return data; // 
 }
 
 function renderWelcome(name) {
@@ -463,7 +462,7 @@ function fillProfile(u) {
   }
 }
 
-// --- UPDATED PROFILE FUNCTION START ---
+
 async function initPublicProfilePage() {
   const { token, firstName } = getUserData();
   const params = new URLSearchParams(location.search);
@@ -485,7 +484,7 @@ async function initPublicProfilePage() {
     } else if (token) {
       user = users.find(x => String(x.firstName).toLowerCase() === firstName.toLowerCase());
       
-      // Fallback: Jika menggunakan token simulasi, kita bisa ekstrak ID-nya
+
       if (!user && token.startsWith('SIMULATED_')) {
           const userId = Number(token.split('_')[1]);
           user = users.find(x => x.id === userId);
